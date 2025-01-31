@@ -22,4 +22,12 @@ dependencyResolutionManagement {
 rootProject.name = "modulaiztionCourseDemo"
 include(":app")
 include(":core")
-include(":hero-datasource")
+include(":hero")
+include(":hero:hero-datasource")
+include(":hero:hero-datasource-test")
+include(":hero:hero-domain")
+include(":hero:hero-interactors")
+include(":hero:heroDetail")
+include(":hero:ui-heroList")
+include(":constants")
+include(":components")
