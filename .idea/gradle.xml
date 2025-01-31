@@ -19,7 +19,7 @@
             <option value="$PROJECT_DIR$/hero/hero-datasource-test" />
             <option value="$PROJECT_DIR$/hero/hero-domain" />
             <option value="$PROJECT_DIR$/hero/hero-interactors" />
-            <option value="$PROJECT_DIR$/hero/heroDetail" />
+            <option value="$PROJECT_DIR$/hero/ui-heroDetail" />
             <option value="$PROJECT_DIR$/hero/ui-heroList" />
           </set>
         </option>
