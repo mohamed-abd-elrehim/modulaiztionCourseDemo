@@ -4,7 +4,7 @@ sealed class UIComponent {
     data class Dialog(
         val title: String,
         val description: String? = null,
-    )
+    ) : UIComponent()
     data class None(
         val message: String
     ) : UIComponent()
@@ -13,3 +13,4 @@ sealed class UIComponent {
 //    Without : UIComponent(), Dialog would not be recognized as a valid
 //    subclass of UIComponent, causing a compilation error.
 }
+
