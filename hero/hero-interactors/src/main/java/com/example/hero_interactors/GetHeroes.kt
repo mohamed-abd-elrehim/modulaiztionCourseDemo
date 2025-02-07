@@ -18,6 +18,7 @@ class GetHeroes(
             val heroes = service.getHerosStats()
             emit(DataState.Data(heroes))
         } catch (e: Exception) {
+
             emit(
                 DataState.Response(
                     uiComponent = UIComponent.Dialog(

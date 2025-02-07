@@ -2,6 +2,7 @@ apply {
     from("$rootDir/library-build.gradle")
 }
 
+
 plugins {
     kotlin("plugin.serialization") version "2.0.0"
 }
