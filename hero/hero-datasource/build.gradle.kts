@@ -35,15 +35,15 @@ dependencies {
 
 }
 
-sqldelight{
-    databases{
-        create("HeroDatabase"){
+sqldelight {
+    databases {
+        create("HeroDatabase") { // This name matches the generated database class
             packageName.set("com.example.hero_datasource.cache")
-
 
         }
     }
 }
+
 /*
   Summary of the Relationship Between the Libraries:
   Core Ktor Client (ktor-core): Handles basic HTTP requests and responses.

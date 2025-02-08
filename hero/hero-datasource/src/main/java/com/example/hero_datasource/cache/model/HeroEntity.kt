@@ -1,4 +1,4 @@
-package com.example.hero_datasource.cache
+package com.example.hero_datasource.cache.model
 
 import com.example.hero_domain.Hero
 import com.example.hero_domain.HeroRole

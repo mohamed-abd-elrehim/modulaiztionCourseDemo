@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.example.core.DataState
 import com.example.core.Logger
 import com.example.core.ProgressBarState
@@ -32,7 +33,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             ModulaiztionCourseDemoTheme {
                 MainScreen(
-                    getHeroes = HeroInteractors.build().getHeroes,
+                    getHeroes = HeroInteractors.build(
+                        AndroidSqliteDriver(
+                            HeroInteractors.schema,
+                            this,
+                            HeroInteractors.dbName
+                        )
+                    ).getHeroes,
                     logger = logger
                 )
             }
