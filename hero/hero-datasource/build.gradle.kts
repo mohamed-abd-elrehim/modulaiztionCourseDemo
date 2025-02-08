@@ -5,6 +5,7 @@ apply {
 
 plugins {
     kotlin("plugin.serialization") version "2.0.0"
+    id("app.cash.sqldelight") version "2.0.2"
 }
 
 
@@ -17,7 +18,6 @@ dependencies {
     //ktor-client-content-negotiation It allows automatic
     // serialization and deserialization of the request and response data in
     // different formats such as JSON, XML, etc., based on the Content-Type header.
-
     "implementation"(libs.ktor.client.content.negotiation)
 
 
@@ -29,23 +29,37 @@ dependencies {
     "implementation"(libs.kotlinx.serialization.json)
     "testImplementation"(libs.ktor.mock) // `mock` is usually used for testing
 
+    "implementation"(libs.sqldelight.runtime)
 
-    /*
-    Summary of the Relationship Between the Libraries:
-    Core Ktor Client (ktor-core): Handles basic HTTP requests and responses.
-    CIO Engine (ktor-client-cio): Provides the engine to handle low-level network communication,
-     working asynchronously with Kotlin coroutines.
-    Content Negotiation (ktor-client-content-negotiation): Determines how to handle the serialization
-     and deserialization of HTTP content based on the response's Content-Type.
-    JSON Handling (ktor-client-json, kotlinx.serialization.json): Provides tools for serializing and deserializing
-    JSON data. The Ktor client uses Kotlinx Serialization to map JSON to and from Kotlin objects.
-    Serialization Plugin (ktor-serialization): Integrates Kotlinx Serialization with Ktor to handle all the
-    (de)serialization for the HTTP client.Mocking for Testing (ktor-mock): Helps in
-    testing by simulating network requests and responses, so you don't need to make real API calls in unit tests.
 
-    * */
 
-    /*Ktor and Retrofit are both popular libraries for making HTTP requests in Kotlin, but they serve different purposes and have different approaches. Here’s a detailed comparison of Ktor vs Retrofit:
+}
+
+sqldelight{
+    databases{
+        create("HeroDatabase"){
+            packageName.set("com.example.hero_datasource.cache")
+
+
+        }
+    }
+}
+/*
+  Summary of the Relationship Between the Libraries:
+  Core Ktor Client (ktor-core): Handles basic HTTP requests and responses.
+  CIO Engine (ktor-client-cio): Provides the engine to handle low-level network communication,
+   working asynchronously with Kotlin coroutines.
+  Content Negotiation (ktor-client-content-negotiation): Determines how to handle the serialization
+   and deserialization of HTTP content based on the response's Content-Type.
+  JSON Handling (ktor-client-json, kotlinx.serialization.json): Provides tools for serializing and deserializing
+  JSON data. The Ktor client uses Kotlinx Serialization to map JSON to and from Kotlin objects.
+  Serialization Plugin (ktor-serialization): Integrates Kotlinx Serialization with Ktor to handle all the
+  (de)serialization for the HTTP client.Mocking for Testing (ktor-mock): Helps in
+  testing by simulating network requests and responses, so you don't need to make real API calls in unit tests.
+
+  * */
+
+/*Ktor and Retrofit are both popular libraries for making HTTP requests in Kotlin, but they serve different purposes and have different approaches. Here’s a detailed comparison of Ktor vs Retrofit:
 
 1. General Overview:
 Ktor:
@@ -68,9 +82,9 @@ kotlin
 Copy
 Edit
 val client = HttpClient(CIO) {
-    install(ContentNegotiation) {
-        json(Json)
-    }
+install(ContentNegotiation) {
+    json(Json)
+}
 }
 
 val response: ApiResponse = client.get("https://api.example.com/endpoint")
@@ -82,14 +96,14 @@ kotlin
 Copy
 Edit
 interface ApiService {
-    @GET("endpoint")
-    suspend fun getData(): ApiResponse
+@GET("endpoint")
+suspend fun getData(): ApiResponse
 }
 
 val retrofit = Retrofit.Builder()
-    .baseUrl("https://api.example.com/")
-    .addConverterFactory(GsonConverterFactory.create())
-    .build()
+.baseUrl("https://api.example.com/")
+.addConverterFactory(GsonConverterFactory.create())
+.build()
 
 val apiService = retrofit.create(ApiService::class.java)
 val response = apiService.getData()
@@ -153,5 +167,4 @@ Your choice depends on the complexity of your project and the level of control y
 
 
 
-    */
-}
+*/

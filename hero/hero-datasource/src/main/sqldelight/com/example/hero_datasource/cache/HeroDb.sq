@@ -1,0 +1,181 @@
+-- Create the hero_Entity table
+CREATE TABLE hero_Entity(
+    -- Primary key for the hero
+    id INTEGER NOT NULL PRIMARY KEY,
+
+    -- Basic hero information
+    localizedName TEXT NOT NULL, -- Hero's localized name
+    primaryAttribute TEXT NOT NULL, -- Primary attribute (e.g., strength, agility, intelligence)
+    attackType TEXT NOT NULL, -- Attack type (e.g., melee, ranged)
+
+    -- Role information (stored as boolean-like integers)
+    -- '1' indicates the hero has the role, '0' otherwise
+    roleCarry INTEGER DEFAULT 0,
+    roleEscape INTEGER DEFAULT 0,
+    roleNuker INTEGER DEFAULT 0,
+    roleInitiator INTEGER DEFAULT 0,
+    roleDurable INTEGER DEFAULT 0,
+    roleDisabler INTEGER DEFAULT 0,
+    roleJungler INTEGER DEFAULT 0,
+    roleSupport INTEGER DEFAULT 0,
+    rolePusher INTEGER DEFAULT 0,
+
+    -- Hero assets
+    img TEXT NOT NULL, -- URL/path to the hero's image
+    icon TEXT NOT NULL, -- URL/path to the hero's icon
+
+    -- Base stats
+    baseHealth REAL NOT NULL, -- Hero's starting health
+    baseHealthRegen REAL, -- Health regeneration rate
+    baseMana REAL NOT NULL, -- Hero's starting mana
+    baseManaRegen REAL, -- Mana regeneration rate
+    baseArmor REAL NOT NULL, -- Starting armor
+    baseMoveRate REAL NOT NULL, -- Movement speed
+    baseAttackMin REAL NOT NULL, -- Minimum attack damage
+    baseAttackMax REAL NOT NULL, -- Maximum attack damage
+
+    -- Base attributes
+    baseStr INTEGER NOT NULL, -- Starting strength
+    baseAgi INTEGER NOT NULL, -- Starting agility
+    baseInt INTEGER NOT NULL, -- Starting intelligence
+
+    -- Attribute growth per level
+    strGain REAL NOT NULL, -- Strength gain per level
+    agiGain REAL NOT NULL, -- Agility gain per level
+    intGain REAL NOT NULL, -- Intelligence gain per level
+
+    -- Combat stats
+    attackRange INTEGER NOT NULL, -- Attack range
+    projectileSpeed INTEGER NOT NULL, -- Projectile speed (if applicable)
+    attackRate REAL NOT NULL, -- Attack rate (attacks per second)
+    moveSpeed INTEGER NOT NULL, -- Movement speed
+    turnRate REAL, -- Turn rate
+    legs INTEGER NOT NULL, -- Number of legs (used for animation or lore)
+
+    -- Pick/win statistics for different game modes
+    turboPicks INTEGER NOT NULL, -- Turbo mode picks
+    turboWins INTEGER NOT NULL, -- Turbo mode wins
+    proWins INTEGER NOT NULL, -- Professional wins
+    proPick INTEGER NOT NULL, -- Professional picks
+    firstPick INTEGER NOT NULL, -- First round picks
+    firstWin INTEGER NOT NULL, -- First round wins
+    secondPick INTEGER NOT NULL, -- Second round picks
+    secondWin INTEGER NOT NULL, -- Second round wins
+    thirdPick INTEGER NOT NULL,
+    thirdWin INTEGER NOT NULL,
+    fourthPick INTEGER NOT NULL,
+    fourthWin INTEGER NOT NULL,
+    fifthPick INTEGER NOT NULL,
+    fifthWin INTEGER NOT NULL,
+    sixthPick INTEGER NOT NULL,
+    sixthWin INTEGER NOT NULL,
+    seventhPick INTEGER NOT NULL,
+    seventhWin INTEGER NOT NULL,
+    eighthPick INTEGER NOT NULL,
+    eighthWin INTEGER NOT NULL
+);
+
+-- Query to select all heroes
+selectAll:
+SELECT *
+FROM hero_Entity;
+
+-- Query to insert or replace a hero's data
+insertHero:
+INSERT OR REPLACE
+INTO hero_Entity (
+    id,
+    localizedName,
+    primaryAttribute,
+    attackType,
+    roleCarry,
+    roleEscape,
+    roleNuker,
+    roleInitiator,
+    roleDurable,
+    roleDisabler,
+    roleJungler,
+    roleSupport,
+    rolePusher,
+    img,
+    icon,
+    baseHealth,
+    baseHealthRegen ,
+    baseMana,
+    baseManaRegen ,
+    baseArmor,
+    baseMoveRate,
+    baseAttackMin,
+    baseAttackMax,
+    baseStr,
+    baseAgi,
+    baseInt,
+    strGain,
+    agiGain,
+    intGain,
+    attackRange,
+    projectileSpeed,
+    attackRate,
+    moveSpeed,
+    turnRate ,
+    legs,
+    turboPicks,
+    turboWins,
+    proWins,
+    proPick,
+    firstPick,
+    firstWin,
+    secondPick,
+    secondWin,
+    thirdPick,
+    thirdWin,
+    fourthPick,
+    fourthWin,
+    fifthPick,
+    fifthWin,
+    sixthPick,
+    sixthWin,
+    seventhPick,
+    seventhWin,
+    eighthPick,
+    eighthWin
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Query to search for heroes by name
+searchHeroByName:
+SELECT * FROM hero_Entity
+WHERE localizedName LIKE ('%' || ? || '%');
+
+-- Query to search for heroes by primary attribute
+searchHeroByAttr:
+SELECT * FROM hero_Entity
+WHERE primaryAttribute = ?;
+
+-- Query to search for heroes by attack type
+searchHeroByAttackType:
+SELECT * FROM hero_Entity
+WHERE attackType = ?;
+
+-- Query to search for heroes by roles
+-- Matches all roles based on the provided role parameters
+searchHeroByRole:
+SELECT * FROM hero_Entity
+WHERE roleCarry = ?
+AND roleEscape = ?
+AND roleNuker = ?
+AND roleInitiator = ?
+AND roleDurable = ?
+AND roleDisabler = ?
+AND roleJungler = ?
+AND roleSupport = ?
+AND rolePusher = ?;
+
+-- Query to get a specific hero by their ID
+getHero:
+SELECT * FROM hero_Entity
+WHERE id = ?;
+
+-- Query to remove a hero by their ID
+removeHero:
+DELETE FROM hero_Entity
+WHERE id = ?;
