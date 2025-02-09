@@ -17,7 +17,9 @@ class HeroServiceImpl(
 
 ) : IHeroService {
     override suspend fun getHerosStats(): List<Hero> {
+
         val response: List<HeroDto> = client.get(EndPoints.HERO_STATS).body()
+        println("getHeroes: $response")
 
         return response.map { it.toHero() }
     }

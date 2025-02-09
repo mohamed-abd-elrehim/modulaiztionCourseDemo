@@ -1,5 +1,6 @@
 package com.example.hero_datasource.network.model
 import com.example.hero_datasource.network.EndPoints.BASE_URL
+import com.example.hero_datasource.network.EndPoints.BASE_URL_IMAG
 import com.example.hero_domain.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -156,8 +157,8 @@ fun HeroDto.toHero(): Hero {
         primaryAttribute = getHeroAttrFromAbreviation(primaryAttribute),
         attackType = getHeroAttackType(attackType),
         roles = roles.map { getHeroRole(it) },
-        img = "$BASE_URL$img",
-        icon = "$BASE_URL$icon",
+        img = "$BASE_URL_IMAG$img",
+        icon = "$BASE_URL_IMAG$icon",
         baseHealth = baseHealth,
         baseHealthRegen = baseHealthRegen,
         baseMana = baseMana,

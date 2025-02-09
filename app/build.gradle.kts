@@ -38,12 +38,14 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
 dependencies {
     implementation (project(":core"))
     implementation (project(":hero:hero-domain"))
     implementation (project(":hero:hero-interactors"))
+    implementation (project(":hero:ui-heroList"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -20,6 +20,8 @@ import com.example.core.UIComponent
 import com.example.hero_domain.Hero
 import com.example.hero_interactors.GetHeroes
 import com.example.hero_interactors.HeroInteractors
+import com.example.modulaiztioncoursedemo.ui.HeroList
+import com.example.modulaiztioncoursedemo.ui.HeroListState
 import com.example.modulaiztioncoursedemo.ui.theme.ModulaiztionCourseDemoTheme
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -51,9 +53,8 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(
     getHeroes: GetHeroes,
     logger: Logger,
-    modifier: Modifier = Modifier.fillMaxSize()
 ) {
-    val heros = remember { mutableStateOf<List<Hero>>(emptyList()) }
+    val state = remember { mutableStateOf<HeroListState>(HeroListState()) }
     val loading:MutableState<ProgressBarState> = remember { mutableStateOf(ProgressBarState.Idle) }
 
     LaunchedEffect(Unit) {
@@ -70,7 +71,8 @@ fun MainScreen(
                     }
                 }
                 is DataState.Data -> {
-                    heros.value = dataState.data ?: emptyList()
+
+                    state.value = state.value.copy(heroesState = dataState.data ?: emptyList())
                 }
                 is DataState.Loading -> {
                     loading.value = dataState.progressBarState
@@ -79,16 +81,5 @@ fun MainScreen(
         }.launchIn(this)
     }
 
-    Box(modifier = modifier) {
-        LazyColumn {
-            items(heros.value.size) { hero ->
-                Text( heros.value[hero].localizedName)
-            }
-        }
-        if (loading.value is ProgressBarState.Loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-    }
+    HeroList(state = state.value)
 }

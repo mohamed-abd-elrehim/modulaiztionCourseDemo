@@ -11,6 +11,9 @@ The apply false in the context of Gradle plugin declarations means that the plug
  */
     alias(libs.plugins.sqldelight) apply false
 
+    alias(libs.plugins.hiltdagger) apply false
+
+
 
 }
 
