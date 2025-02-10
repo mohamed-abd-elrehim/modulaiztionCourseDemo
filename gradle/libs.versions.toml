@@ -19,6 +19,7 @@ hilt-dagger="2.51.1"
 
 
 
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -54,9 +55,8 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 kotlinx-serialization-json={module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor"}
 kotlinx-coroutines-android={module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxcoroutines"}
 
-hiltdagger-android-compiler={module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-dagger"}
-hiltdagger-compiler={module = "com.google.dagger:hilt-compiler", version.ref = "hilt-dagger"}
-
+hilt-android-compiler={module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-dagger"}
+hilt-android={module = "com.google.dagger:hilt-android", version.ref = "hilt-dagger"}
 
 
 
@@ -69,4 +69,5 @@ jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrai
 android-library = { id = "com.android.library", version.ref = "agp" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 hiltdagger ={ id = "com.google.dagger.hilt.android", version.ref = "hilt-dagger" }
+kotlinkapt = { id = "kotlin-kapt" }
 

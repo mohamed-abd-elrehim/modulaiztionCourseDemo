@@ -23,9 +23,11 @@ import com.example.hero_interactors.HeroInteractors
 import com.example.modulaiztioncoursedemo.ui.HeroList
 import com.example.modulaiztioncoursedemo.ui.HeroListState
 import com.example.modulaiztioncoursedemo.ui.theme.ModulaiztionCourseDemoTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val logger = Logger("getHeroeTest")
