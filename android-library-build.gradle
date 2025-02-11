@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 
 
@@ -34,7 +35,9 @@ android {
     buildFeatures {
         compose = true
     }
-
+    kapt{
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -46,6 +49,10 @@ dependencies {
     implementation libs.androidx.ui.tooling.preview
     implementation libs.androidx.material3
     implementation libs.sqldelight.android.driver
+
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
+
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
