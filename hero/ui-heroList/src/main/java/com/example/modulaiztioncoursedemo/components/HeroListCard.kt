@@ -1,5 +1,6 @@
 package com.example.modulaiztioncoursedemo.components
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +23,11 @@ import kotlin.math.round
 
 @Composable
 fun HeroListCard(
+    context: Context,
     hero: Hero,
     imageLoader: ImageLoader,
     onSelectHero: (Int) -> Unit,
 ) {
-    val context = LocalContext.current
     ElevationCard(
         modifier = Modifier
             .padding(10.dp)
