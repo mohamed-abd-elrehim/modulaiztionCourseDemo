@@ -7,20 +7,24 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import coil.ImageLoader
 import com.example.core.ProgressBarState
-import com.example.modulaiztioncoursedemo.components.Gap
 import com.example.modulaiztioncoursedemo.components.HeroListCard
 
 @Composable
 fun HeroList (
     state: HeroListState,
+    //imageLoader: ImageLoader,
 ){
     Box(Modifier.fillMaxSize()) {
         LazyColumn {
             items(state.heroesState.size) { hero ->
-                HeroListCard( hero = state.heroesState[hero],
-                    onSelectHero = {}
-                )
+                state.imageLoader?.let {
+                    HeroListCard( hero = state.heroesState[hero],
+                        imageLoader = it,
+                        onSelectHero = {}
+                    )
+                }
             }
         }
         if (state.progressBarState is ProgressBarState.Loading) {
@@ -30,3 +34,4 @@ fun HeroList (
         }
     }
 }
+

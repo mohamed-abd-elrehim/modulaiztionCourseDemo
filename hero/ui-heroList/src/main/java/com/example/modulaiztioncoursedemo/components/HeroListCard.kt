@@ -16,11 +16,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
 import com.example.hero_domain.Hero
 import kotlin.math.round
+
 @Composable
 fun HeroListCard(
     hero: Hero,
+    imageLoader: ImageLoader,
     onSelectHero: (Int) -> Unit,
 ) {
     val context = LocalContext.current
@@ -40,13 +43,13 @@ fun HeroListCard(
             ) {
                 // Hero Image
                 LoadAsyncImage(
-                    context = context,
                     imageUrl = hero.img,
                     imageTitle = hero.localizedName,
                     modifier = Modifier
                         .background(Color.LightGray)
-                        .width(150.dp)
-
+                        .width(150.dp),
+                    imageLoader = imageLoader,
+                    context = context
                 )
 
                 Gap(width = 20)
