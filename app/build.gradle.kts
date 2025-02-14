@@ -52,6 +52,7 @@ dependencies {
     implementation (project(":hero:hero-domain"))
     implementation (project(":hero:hero-interactors"))
     implementation (project(":hero:ui-heroList"))
+    implementation (project(":hero:ui-heroDetail"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -62,6 +63,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(libs.sqldelight.android.driver)
+    implementation(libs.nav.compose)
 
 
     kapt(libs.hilt.android.compiler)

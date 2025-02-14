@@ -1,6 +1,6 @@
 package com.example.modulaiztioncoursedemo.ui
 
-import androidx.compose.foundation.Image
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,88 +10,155 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
+import com.example.core.CustomSharedList
+import com.example.hero_domain.Hero
+import com.example.hero_domain.maxAttackDmg
+import com.example.hero_domain.minAttackDmg
 import com.example.herodetail.R
 import com.example.modulaiztioncoursedemo.components.AppText
-import com.example.modulaiztioncoursedemo.components.ElevationCard
 import com.example.modulaiztioncoursedemo.components.Gap
 import com.example.modulaiztioncoursedemo.components.HeroStatisticsCard
 import com.example.modulaiztioncoursedemo.components.HeroWinColumn
 import com.example.modulaiztioncoursedemo.components.LoadAsyncImage
+import kotlin.math.round
 
 @Composable
-fun HeroDetails(
-    ){
-
-
-    Box(modifier = Modifier
-        .background(Color.Cyan)
-        .fillMaxSize()) {
-        Column() {
-            Box(
-                modifier = Modifier
-                    .background(Color.LightGray)
-                    .fillMaxWidth()
-                    .height(250.dp)
-            )
-
-            AppText(
-                text = "Hero Details",
-                fontSize = 40.sp,
-                modifier = Modifier.padding(5.dp),
-                fontWeight = FontWeight.Bold
-            )
-            AppText(
-                text = "Agility",
-                modifier = Modifier.padding(5.dp),
-                fontSize = 20.sp,
-            )
-            AppText(
-                text = "Ranged",
-                fontSize = 15.sp,
-                modifier = Modifier.padding(5.dp),
-                color = Color.Gray
-            )
-
-            Gap(height = 20)
-            HeroStatisticsCard()
-
-            Gap(height = 20)
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                HeroWinColumn()
-                Gap(width = 100)
-                HeroWinColumn()
+fun HeroDetails(hero: HeroDetailsState) {
+    val context = LocalContext.current
+    val imageLoader = hero.imageLoader
+    hero.heroState?.let { hero ->
+        Box(
+            modifier = Modifier
+                .background(Color.Cyan)
+                .fillMaxSize()
+        ) {
+            Column {
+                HeroImage(hero, imageLoader, context)
+                HeroBasicDetails(hero)
+                HeroStatsSection(hero)
+                HeroWinStats(hero)
             }
-
         }
-
-
     }
+}
 
+@Composable
+fun HeroImage(hero: Hero, imageLoader: ImageLoader?, context: Context) {
+    imageLoader?.let {
+        LoadAsyncImage(
+            imageUrl = hero.img,
+            imageTitle = hero.localizedName,
+            modifier = Modifier
+                .background(Color.LightGray)
+                .fillMaxWidth()
+                .height(400.dp),
+            imageLoader = it,
+            context = context
+        )
+    }
+}
 
+@Composable
+fun HeroBasicDetails(hero: Hero) {
+    Column(modifier = Modifier.padding(10.dp)) {
+        AppText(
+            text = hero.localizedName,
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 10.dp)
+        )
+        AppText(
+            text = hero.primaryAttribute.uiValue,
+            modifier = Modifier.padding(bottom = 10.dp),
+            fontSize = 20.sp
+        )
+        AppText(
+            text = hero.attackType.uiValue,
+            fontSize = 15.sp,
+            color = Color.Gray,
+            modifier = Modifier.padding(bottom = 10.dp)
+
+        )
+    }
+}
+
+@Composable
+fun HeroStatsSection(hero: Hero) {
+    Gap(height = 20)
+
+    val health = remember { round((hero.baseHealth + hero.baseStr * 20)).toInt() }
+    val atkMin = remember { hero.minAttackDmg() }
+    val atkMax = remember { hero.maxAttackDmg() }
+
+    val statsList = listOf(
+        CustomSharedList(
+            first = stringResource(id = R.string.strength),
+            second = "${hero.baseStr} + ${hero.strGain}",
+            third = stringResource(id = R.string.agility),
+            fourth = "${hero.baseAgi} + ${hero.agiGain}"
+        ),
+        CustomSharedList(
+            first = stringResource(id = R.string.intelligence),
+            second = "${hero.baseInt} + ${hero.intGain}",
+            third = stringResource(id = R.string.health),
+            fourth = "$health"
+        ),
+        CustomSharedList(
+            first = stringResource(id = R.string.attack_range),
+            second = "${hero.attackRange}",
+            third = stringResource(id = R.string.projectile_speed),
+            fourth = "${hero.projectileSpeed}"
+        ),
+        CustomSharedList(
+            first = stringResource(id = R.string.move_speed),
+            second = "${hero.moveSpeed}",
+            third = stringResource(id = R.string.attack_dmg),
+            fourth = "$atkMin - $atkMax"
+        )
+    )
+
+    HeroStatisticsCard(list = statsList)
 
 
 }
 
 @Composable
-@Preview(showSystemUi = true)
-fun HeroDetailsPreview(){
-    HeroDetails()
+fun HeroWinStats(hero: Hero) {
+    Gap(height = 20)
+    val proWinPercentage = remember {
+        round((hero.proWins.toDouble() / (hero.proPick.toDouble())) * 100).toInt()
     }
+    val turboWinPercentage = remember {
+        round((hero.turboWins.toDouble() / (hero.turboPicks.toDouble())) * 100).toInt()
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        HeroWinColumn(
+            columnName = "Pro Wins",
+            columnValue = "$proWinPercentage"
+        )
+        Gap(width = 100)
+        HeroWinColumn(
+            columnName = "Turbo Wins",
+            columnValue = "$turboWinPercentage"
+        )
+    }
+}
+

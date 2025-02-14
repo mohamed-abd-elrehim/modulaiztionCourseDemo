@@ -8,22 +8,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun HeroWinColumn (){
+fun HeroWinColumn (
+    color: Color = Color.Blue,
+    columnName: String ,
+    columnValue: String
+){
     Column (
         horizontalAlignment = Alignment.CenterHorizontally
 
 
     ){
         AppText(
-            text = "Win Rate",
+            text = columnName,
             textAlign = TextAlign.Center,
             fontSize = 25.sp
         )
+
         AppText(
-            text = "50%",
+            text = "${columnValue}%",
             textAlign = TextAlign.Center,
             fontSize = 25.sp,
-            color = Color.Green
+            color = if (columnValue.toDouble() > 50) Color.Blue else Color.Black
         )
     }
 }

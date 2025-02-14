@@ -13,9 +13,11 @@ plugins {
 dependencies {
 
     "implementation"(project(":core"))
-    "implementation"(project(":hero:hero-domain"))
     "implementation"(project(":hero:hero-interactors"))
+    "implementation"(project(":hero:hero-domain"))
     "implementation"(project(":components"))
+
+
 
 
 }

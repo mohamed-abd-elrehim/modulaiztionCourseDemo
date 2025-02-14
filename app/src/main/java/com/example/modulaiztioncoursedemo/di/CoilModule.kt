@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import coil.memory.MemoryCache
+import com.example.modulaiztioncoursedemo.R
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -40,6 +41,7 @@ object CoilModule {
                     .connectTimeout(30, TimeUnit.SECONDS) // Sets a 30-second timeout for network requests.
                     .build()
             }
+            .error(R.drawable.error_image) // Sets a default error image if loading fails.)
             .build()
     }
 }

@@ -17,8 +17,7 @@ sqldelight = "2.0.2"
 coil ="2.7.0"
 hilt-dagger="2.51.1"
 androidx-hilt ="1.2.0"
-
-
+nav_version = "2.8.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,6 +58,7 @@ hilt-android-compiler={module = "com.google.dagger:hilt-android-compiler", versi
 hilt-android={module = "com.google.dagger:hilt-android", version.ref = "hilt-dagger"}
 hilt-navigation-compose={ module = "androidx.hilt:hilt-navigation-compose", version.ref ="androidx-hilt" }
 
+nav_compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav_version" }
 
 
 
