@@ -1,19 +1,15 @@
 package com.example.modulaiztioncoursedemo.ui
 
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import com.example.core.DataState
 import com.example.core.Logger
-import com.example.core.ProgressBarState
 import com.example.core.UIComponent
 import com.example.hero_interactors.GetHeroes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -42,10 +38,29 @@ class HeroListViewModel @Inject constructor(
             is HeroListEvents.GetHeroes -> {
                 getHeroes()
             }
+            is HeroListEvents.FilterHeroes -> {
+                filterHeroes()
+            }
+            is HeroListEvents.UpdateHeroName -> {
+                updateHeroName(event.heroName)
+            }
         }
     }
 
 
+    private fun updateHeroName (heroName:String){
+        _state.value = _state.value.copy(heroName = heroName)
+    }
+
+    private fun filterHeroes(){
+        val filteredList = _state.value.heroesState.filter { hero ->
+            hero.localizedName.contains(_state.value.heroName,
+                ignoreCase = true)//ignoreCase = true It allows you to compare strings without
+        // worrying about the case (uppercase or lowercase).
+        }
+        _state.value = _state.value.copy(filterHerosState = filteredList)
+
+    }
     private  fun getHeroes(){
         getHeroes.execute().onEach { dataState ->
             when (dataState) {
@@ -55,6 +70,7 @@ class HeroListViewModel @Inject constructor(
 
                 is DataState.Data -> {
                     _state.value =_state.value.copy (heroesState = dataState.data?: emptyList())
+                    filterHeroes()
                 }
                 is DataState.Loading -> {
                     _state.value = _state.value.copy( progressBarState = dataState.progressBarState)
@@ -62,6 +78,8 @@ class HeroListViewModel @Inject constructor(
             }
         }.launchIn( viewModelScope)
     }
+
+
 
 
     private fun handelResponse(uiComponent: UIComponent) {
