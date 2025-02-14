@@ -1,6 +1,7 @@
 package com.example.modulaiztioncoursedemo.di
 
 import com.example.core.Logger
+import com.example.hero_interactors.FilterHeros
 import com.example.hero_interactors.GetHeroes
 import com.example.hero_interactors.HeroInteractors
 import dagger.Module
@@ -22,6 +23,8 @@ object HeroListModule {
         return interactors.getHeroes
 
     }
+
+
     @Provides
     @Singleton
     @Named("heroListLogger")
@@ -32,5 +35,11 @@ object HeroListModule {
         )
 
     }
-
+    @Provides
+    @Singleton
+    fun provideFilterHeros(
+        interactors: HeroInteractors
+    ): FilterHeros {
+        return interactors.filterHeros
+    }
 }

@@ -37,5 +37,5 @@ object HeroInteractorsModule {
 
 
 
-    
+
 }

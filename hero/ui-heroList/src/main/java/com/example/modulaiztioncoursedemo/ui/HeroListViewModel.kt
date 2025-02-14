@@ -7,6 +7,7 @@ import coil.ImageLoader
 import com.example.core.DataState
 import com.example.core.Logger
 import com.example.core.UIComponent
+import com.example.hero_interactors.FilterHeros
 import com.example.hero_interactors.GetHeroes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ import javax.inject.Named
 class HeroListViewModel @Inject constructor(
     private val getHeroes: GetHeroes,
     @Named("heroListLogger")  private val logger: Logger,
+    private val filterHeros: FilterHeros,
     private val imageLoader: ImageLoader,
 ): ViewModel() {
 
@@ -53,11 +55,13 @@ class HeroListViewModel @Inject constructor(
     }
 
     private fun filterHeroes(){
-        val filteredList = _state.value.heroesState.filter { hero ->
-            hero.localizedName.contains(_state.value.heroName,
-                ignoreCase = true)//ignoreCase = true It allows you to compare strings without
-        // worrying about the case (uppercase or lowercase).
-        }
+        val filteredList = filterHeros.execute(
+            current = _state.value.heroesState,
+            heroName = _state.value.heroName,
+            heroFilter = _state.value.heroFilter,
+            attributeFilter = _state.value.primaryAttribute
+        )
+
         _state.value = _state.value.copy(filterHerosState = filteredList)
 
     }

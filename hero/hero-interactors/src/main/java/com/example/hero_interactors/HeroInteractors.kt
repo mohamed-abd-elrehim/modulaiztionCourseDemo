@@ -6,7 +6,8 @@ import com.example.hero_datasource.network.service.IHeroService
 
 data class HeroInteractors(
     val getHeroes: GetHeroes,
-    val getHeroFromCache: GetHeroFromCache
+    val getHeroFromCache: GetHeroFromCache,
+    val filterHeros: FilterHeros
 ) {
     companion object Factory {
         fun build(sqlDriver: SqlDriver): HeroInteractors {
@@ -14,7 +15,8 @@ data class HeroInteractors(
             val cache = IHeroCacheService.build(sqlDriver)
             return HeroInteractors(
                 getHeroes = GetHeroes(service = service, cache = cache),
-                getHeroFromCache = GetHeroFromCache(cache = cache)
+                getHeroFromCache = GetHeroFromCache(cache = cache),
+                filterHeros = FilterHeros()
             )
         }
 
