@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.core.ProgressBarState
 import com.example.core.UiComponentsState
 import com.example.hero_domain.HeroFilter
+import com.example.modulaiztioncoursedemo.components.CircularIndeterminateProgressBar
 import com.example.modulaiztioncoursedemo.components.HeroListCard
 import com.example.modulaiztioncoursedemo.components.HeroListFilterPopup
 import com.example.modulaiztioncoursedemo.components.HeroListToolbar
@@ -81,9 +82,7 @@ fun HeroList(
                    })
            }
            if (state.progressBarState is ProgressBarState.Loading) {
-               CircularProgressIndicator(
-                   modifier = Modifier.align(Alignment.Center)
-               )
+               CircularIndeterminateProgressBar()
            }
        }
 

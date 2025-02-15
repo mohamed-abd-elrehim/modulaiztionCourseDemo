@@ -5,6 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
@@ -68,7 +73,21 @@ fun NavGraphBuilder.addHeroList(
     navController: NavController
 ) {
     composable(
-        route = Screen.HeroListScreen.route
+        route = Screen.HeroListScreen.route,
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(300)
+            )+ fadeOut(animationSpec = tween(300))
+        },
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(300)
+            )+ fadeIn(animationSpec = tween(300))
+
+
+        }
     ) {
         val heroListViewModel: HeroListViewModel = hiltViewModel()
         val state = heroListViewModel.state.collectAsState()
@@ -80,6 +99,7 @@ fun NavGraphBuilder.addHeroList(
                 navController.navigate(
                     "${Screen.HeroDetailScreen.route}/${heroId}"
                 )
+
             },
 
             //imageLoader = imageLoader
@@ -90,8 +110,20 @@ fun NavGraphBuilder.addHeroList(
 fun NavGraphBuilder.addHeroDetail() {
     composable(
         route = Screen.HeroDetailScreen.route+"/{heroId}",
-        arguments = Screen.HeroDetailScreen.arguments
-    ){
+        arguments = Screen.HeroDetailScreen.arguments,
+        enterTransition ={
+            slideInHorizontally(
+                initialOffsetX = { it },
+                animationSpec = tween(300)
+            )+ fadeIn(animationSpec = tween(300))
+        },
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(300)
+            ) + fadeOut(animationSpec = tween(300))
+        }
+        ){
         val viewModel: HeroDetailsViewModel = hiltViewModel()
         val state = viewModel.state.collectAsState()
         HeroDetails(state.value)

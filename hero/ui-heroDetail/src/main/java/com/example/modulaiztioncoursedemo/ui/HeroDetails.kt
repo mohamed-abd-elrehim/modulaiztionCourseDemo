@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,9 +44,10 @@ fun HeroDetails(hero: HeroDetailsState) {
                 .background(Color.Cyan)
                 .fillMaxSize()
         ) {
+
             Column {
-                HeroImage(hero, imageLoader, context)
-                HeroBasicDetails(hero)
+                HeroImage(hero.img,hero.localizedName, imageLoader, context)
+                HeroBasicDetails(hero,imageLoader, context)
                 HeroStatsSection(hero)
                 HeroWinStats(hero)
             }
@@ -54,30 +56,46 @@ fun HeroDetails(hero: HeroDetailsState) {
 }
 
 @Composable
-fun HeroImage(hero: Hero, imageLoader: ImageLoader?, context: Context) {
+fun HeroImage(heroImgUrl:String,heroName:String, imageLoader: ImageLoader?, context: Context,modifier: Modifier =  Modifier
+    .background(Color.LightGray)
+    .fillMaxWidth()
+    .height(400.dp)) {
     imageLoader?.let {
         LoadAsyncImage(
-            imageUrl = hero.img,
-            imageTitle = hero.localizedName,
-            modifier = Modifier
-                .background(Color.LightGray)
-                .fillMaxWidth()
-                .height(400.dp),
-            imageLoader = it,
+            imageUrl = heroImgUrl,
+            imageTitle = heroName,
+            modifier = modifier,
+            imageLoader = imageLoader,
             context = context
         )
     }
 }
 
 @Composable
-fun HeroBasicDetails(hero: Hero) {
+fun HeroBasicDetails(hero: Hero,imageLoader: ImageLoader?, context: Context) {
     Column(modifier = Modifier.padding(10.dp)) {
-        AppText(
-            text = hero.localizedName,
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+
+        ){
+
+            AppText(
+                text = hero.localizedName,
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+            HeroImage(hero.icon,hero.localizedName,imageLoader, context,
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .width(50.dp)
+                    .height(50.dp)
+            )
+
+        }
+
         AppText(
             text = hero.primaryAttribute.uiValue,
             modifier = Modifier.padding(bottom = 10.dp),

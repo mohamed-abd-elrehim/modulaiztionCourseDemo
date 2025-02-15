@@ -2276,14 +2276,17 @@ fun LoadAsyncImage(
     contentScale: ContentScale = ContentScale.Crop, // Default value for contentScale
     imageLoader: ImageLoader // Injected ImageLoader
 ) {
-    AsyncImage(
-        model = ImageRequest.Builder(context)
-            .data(imageUrl)
-            .crossfade(true)
-            .build(),
-        contentDescription = imageTitle,
-        imageLoader = imageLoader, // Use the injected ImageLoader
-        modifier = modifier,
-        contentScale = contentScale
-    )
+    ElevationCard(){
+        AsyncImage(
+            model = ImageRequest.Builder(context)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = imageTitle,
+            imageLoader = imageLoader, // Use the injected ImageLoader
+            modifier = modifier,
+            contentScale = contentScale
+        )
+    }
+
 }
