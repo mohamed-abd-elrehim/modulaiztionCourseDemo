@@ -4,6 +4,7 @@ import com.example.core.FilterOrder
 import com.example.hero_domain.Hero
 import com.example.hero_domain.HeroAttribute
 import com.example.hero_domain.HeroFilter
+import com.sun.tools.javac.util.Log
 import kotlin.math.round
 
 class FilterHeros {
@@ -60,7 +61,11 @@ class FilterHeros {
             }
         }
 
+
+
         return filteredList
+
+
     }
 
 

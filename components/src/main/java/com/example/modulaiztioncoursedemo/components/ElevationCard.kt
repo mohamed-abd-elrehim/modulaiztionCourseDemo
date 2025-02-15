@@ -12,12 +12,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ElevationCard(
     modifier: Modifier = Modifier,
+    shape: RoundedCornerShape = RoundedCornerShape(12.dp),
 
     content: @Composable () -> Unit
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
+        shape = shape,
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,

@@ -2,7 +2,7 @@ package com.example.hero_domain
 
 import com.example.core.FilterOrder
 
-sealed class HeroFilter(uiValue: String) {
+sealed class HeroFilter(val uiValue: String) {
 
     data class Hero(
         val order: FilterOrder = FilterOrder.Descending

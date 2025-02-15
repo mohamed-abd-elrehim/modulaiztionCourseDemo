@@ -7,6 +7,9 @@ import coil.ImageLoader
 import com.example.core.DataState
 import com.example.core.Logger
 import com.example.core.UIComponent
+import com.example.core.UiComponentsState
+import com.example.hero_domain.HeroAttribute
+import com.example.hero_domain.HeroFilter
 import com.example.hero_interactors.FilterHeros
 import com.example.hero_interactors.GetHeroes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +49,32 @@ class HeroListViewModel @Inject constructor(
             is HeroListEvents.UpdateHeroName -> {
                 updateHeroName(event.heroName)
             }
+            is HeroListEvents.UpdateHeroFilter -> {
+                updateHeroFilter(event.heroFilter)
+            }
+            is HeroListEvents.UpdateFilterDialogState -> {
+                updateFilterDialogState(event.uiComponentState)
+            }
+            is HeroListEvents.UpdateHeroPrimaryAttr -> {
+                updateHeroPrimaryAttr(event.heroAttribute)
+            }
+
+
+
         }
+    }
+    private fun updateHeroPrimaryAttr(heroAttribute: HeroAttribute){
+        _state.value = _state.value.copy(primaryAttribute = heroAttribute)
+        filterHeroes()
+    }
+
+    private fun updateFilterDialogState(uiComponentState: UiComponentsState){
+        _state.value = _state.value.copy(uiComponentsState = uiComponentState)
+    }
+
+    private fun updateHeroFilter(heroFilter: HeroFilter){
+        _state.value = _state.value.copy(heroFilter = heroFilter)
+        filterHeroes()
     }
 
 

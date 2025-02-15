@@ -12,7 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.example.core.ProgressBarState
+import com.example.core.UiComponentsState
+import com.example.hero_domain.HeroFilter
 import com.example.modulaiztioncoursedemo.components.HeroListCard
+import com.example.modulaiztioncoursedemo.components.HeroListFilterPopup
 import com.example.modulaiztioncoursedemo.components.HeroListToolbar
 
 @Composable
@@ -38,7 +41,10 @@ fun HeroList(
            onExecuteSearch = {
                events(HeroListEvents.FilterHeroes)
            },
-           onShowFilterDialog = { /* Show filter dialog */ }
+           onShowFilterDialog = {
+               events(HeroListEvents.UpdateFilterDialogState(UiComponentsState.Show))
+           },
+
        )
 
        Box() {
@@ -50,7 +56,7 @@ fun HeroList(
                items(state.filterHerosState.size) { index ->
                    state.imageLoader?.let { imageLoader ->
                        HeroListCard(
-                           hero = state.heroesState[index],
+                           hero = state.filterHerosState[index],
                            imageLoader = imageLoader,
                            context = context,
                            onSelectHero = { heroId ->
@@ -59,6 +65,20 @@ fun HeroList(
                        )
                    }
                }
+           }
+           if (state.uiComponentsState is UiComponentsState.Show) {
+               HeroListFilterPopup(
+                   heroFilter = state.heroFilter,
+                   onUpdateHeroFilter = { heroFilter ->
+                       events(HeroListEvents.UpdateHeroFilter(heroFilter))
+                   },
+                   attributeFilter = state.primaryAttribute,
+                   onUpdateAttributeFilter = { heroAttribute ->
+                       events(HeroListEvents.UpdateHeroPrimaryAttr(heroAttribute))
+                   },
+                   onCloseDialog = {
+                       events(HeroListEvents.UpdateFilterDialogState(UiComponentsState.Hide))
+                   })
            }
            if (state.progressBarState is ProgressBarState.Loading) {
                CircularProgressIndicator(
