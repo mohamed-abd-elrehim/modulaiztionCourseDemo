@@ -39,15 +39,7 @@ class HeroListViewModel @Inject constructor(
 
     init {
        onTriggerEvent(HeroListEvents.GetHeroes)
-        appendToMessageQueue(UIComponent.Dialog(
-            title = "Error",
-            description = "Error"
-        ))
 
-        appendToMessageQueue(UIComponent.Dialog(
-            title = "Error2",
-            description = "Error2"
-        ))
 
     }
 

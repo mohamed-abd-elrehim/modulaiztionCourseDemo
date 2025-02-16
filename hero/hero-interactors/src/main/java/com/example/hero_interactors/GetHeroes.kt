@@ -25,7 +25,6 @@ class GetHeroes(
             val heroesFromCache = cache.selectAll()
            emit(DataState.Data(heroesFromCache))
 
-            throw Exception("some error")
 
         } catch (e: Exception) {
 
