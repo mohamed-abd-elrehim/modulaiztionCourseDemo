@@ -90,7 +90,6 @@ fun HeroDetails(
 
 @Composable
 fun HeroImage(heroImgUrl:String,heroName:String, imageLoader: ImageLoader?, context: Context,modifier: Modifier =  Modifier
-    .background(Color.LightGray)
     .fillMaxWidth()
     .height(400.dp)) {
     imageLoader?.let {
