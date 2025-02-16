@@ -22,11 +22,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
-import com.example.core.CustomSharedList
+import com.example.core.domain.CustomSharedList
+import com.example.core.domain.UIComponent
 import com.example.hero_domain.Hero
 import com.example.hero_domain.maxAttackDmg
 import com.example.hero_domain.minAttackDmg
 import com.example.herodetail.R
+import com.example.modulaiztioncoursedemo.components.AppAlertDialog
 import com.example.modulaiztioncoursedemo.components.AppText
 import com.example.modulaiztioncoursedemo.components.Gap
 import com.example.modulaiztioncoursedemo.components.HeroStatisticsCard
@@ -35,25 +37,56 @@ import com.example.modulaiztioncoursedemo.components.LoadAsyncImage
 import kotlin.math.round
 
 @Composable
-fun HeroDetails(hero: HeroDetailsState) {
+fun HeroDetails(
+    state: HeroDetailsState,
+    events: (HeroDetailsEvents) -> Unit,
+) {
     val context = LocalContext.current
-    val imageLoader = hero.imageLoader
-    hero.heroState?.let { hero ->
+    val imageLoader = state.imageLoader
+    state.heroState?.let { hero ->
         Box(
             modifier = Modifier
                 .background(Color.Cyan)
                 .fillMaxSize()
         ) {
 
+
             Column {
                 HeroImage(hero.img,hero.localizedName, imageLoader, context)
                 HeroBasicDetails(hero,imageLoader, context)
                 HeroStatsSection(hero)
                 HeroWinStats(hero)
+
+
             }
+            if (state.errorQueue.isNotEmpty()) {
+
+                state.errorQueue.peek()?.let { uiComponent ->
+                    if (uiComponent is UIComponent.Dialog) {
+                        AppAlertDialog (
+                            showDialog = true,
+                            title = uiComponent.title,
+                            description = uiComponent.description,
+                            onRemoveHeadFromQueue = {
+                                events(HeroDetailsEvents.RemoveHeadMessageFromQueue)
+                            },
+                        )
+
+                    }
+
+                }
+
+
+
+
+            }
+
+
+
         }
     }
 }
+
 
 @Composable
 fun HeroImage(heroImgUrl:String,heroName:String, imageLoader: ImageLoader?, context: Context,modifier: Modifier =  Modifier
@@ -178,5 +211,7 @@ fun HeroWinStats(hero: Hero) {
             columnValue = "$turboWinPercentage"
         )
     }
+
+
 }
 

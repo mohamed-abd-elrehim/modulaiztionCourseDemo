@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import com.example.core.FilterOrder
+import com.example.core.domain.FilterOrder
 import com.example.hero_domain.HeroAttribute
 import com.example.hero_domain.HeroFilter
 import com.example.herolist.R
@@ -49,24 +50,13 @@ fun HeroListFilterPopup(
     onUpdateAttributeFilter: (HeroAttribute) -> Unit,
     onCloseDialog: () -> Unit
 ) {
-    Popup(
-        alignment = Alignment.Center,
-        onDismissRequest = { onCloseDialog() },
 
+    AppDialog(
+        showDialog = true,
+        onDismiss = onCloseDialog,
+        modifier = Modifier,
+        content = {
 
-    ) {
-        ElevationCard(
-            modifier = Modifier
-
-                .width(350.dp)
-                .wrapContentHeight()
-                .border(
-                    1.dp,
-                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                    RoundedCornerShape(12.dp)
-                ),
-
-            ) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
@@ -91,7 +81,7 @@ fun HeroListFilterPopup(
                                     onUpdateHeroFilter(HeroFilter.Hero())
                                 },
                                 isEnabled = heroFilter is HeroFilter.Hero,
-                                order = if(heroFilter is HeroFilter.Hero) heroFilter.order else null,
+                                order = if (heroFilter is HeroFilter.Hero) heroFilter.order else null,
                                 orderDesc = {
                                     onUpdateHeroFilter(
                                         HeroFilter.Hero(
@@ -116,7 +106,7 @@ fun HeroListFilterPopup(
                                     )
                                 },
                                 isEnabled = heroFilter is HeroFilter.ProWins,
-                                order = if(heroFilter is HeroFilter.ProWins) heroFilter.order else null,
+                                order = if (heroFilter is HeroFilter.ProWins) heroFilter.order else null,
                                 orderDesc = {
                                     onUpdateHeroFilter(
                                         HeroFilter.ProWins(
@@ -167,582 +157,454 @@ fun HeroListFilterPopup(
                     }
                 }
 
-                Gap(height = 16)
-
                 // Close Button
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onCloseDialog() }
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
+                AppIconButton(
+                    icon = Icons.Default.Done,
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = {
+                        onCloseDialog()
+                    },
 
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.error
                     )
-                    Gap(height = 8)
-                    AppText(
-                        text = "Close",
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.clickable { onCloseDialog() }
-                    )
-                }
+
+
             }
+
         }
-    }
+    )
 }
 
 
-/**
- * @param filterOnPrimaryAttr: Set the HeroFilter to 'PrimaryAttribute'
- * @param isEnabled: Is the PrimaryAttribute filter the selected 'HeroFilter'
- * @param attribute: Is the current attribute Strength, Agility or Intelligence?
- * @param orderStr: Set the order to Strength.
- * @param orderAgi: Set the order to Agility.
- * @param orderInt: Set the order to Intelligence.
- */
-@ExperimentalAnimationApi
-@Composable
-fun PrimaryAttrFilterSelector(
-    removeFilterOnPrimaryAttr: () -> Unit,
-    attribute: HeroAttribute,
-    onFilterStr: () -> Unit,
-    onFilterAgi: () -> Unit,
-    onFilterInt: () -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
+    /**
+     * @param filterOnPrimaryAttr: Set the HeroFilter to 'PrimaryAttribute'
+     * @param isEnabled: Is the PrimaryAttribute filter the selected 'HeroFilter'
+     * @param attribute: Is the current attribute Strength, Agility or Intelligence?
+     * @param orderStr: Set the order to Strength.
+     * @param orderAgi: Set the order to Agility.
+     * @param orderInt: Set the order to Intelligence.
+     */
+    @ExperimentalAnimationApi
+    @Composable
+    fun PrimaryAttrFilterSelector(
+        removeFilterOnPrimaryAttr: () -> Unit,
+        attribute: HeroAttribute,
+        onFilterStr: () -> Unit,
+        onFilterAgi: () -> Unit,
+        onFilterInt: () -> Unit,
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .padding(bottom = 12.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
         ) {
-            AppText(
-                text = stringResource(R.string.primary_attribute),
-                style = MaterialTheme.typography.headlineMedium // Use this instead of h3
+            Row(
+                modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .fillMaxWidth(),
+            ) {
+                AppText(
+                    text = stringResource(R.string.primary_attribute),
+                    style = MaterialTheme.typography.headlineMedium // Use this instead of h3
+                )
+            }
+
+            PrimaryAttrSelector(
+                isStr = attribute is HeroAttribute.Strength,
+                isAgi = attribute is HeroAttribute.Agility,
+                isInt = attribute is HeroAttribute.Intelligence,
+                onUpdateHeroFilterStr = {
+                    onFilterStr()
+                },
+                onUpdateHeroFilterAgi = {
+                    onFilterAgi()
+                },
+                onUpdateHeroFilterInt = {
+                    onFilterInt()
+                },
+                onRemoveAttributeFilter = {
+                    removeFilterOnPrimaryAttr()
+                }
             )
         }
-
-        PrimaryAttrSelector(
-            isStr = attribute is HeroAttribute.Strength,
-            isAgi = attribute is HeroAttribute.Agility,
-            isInt = attribute is HeroAttribute.Intelligence,
-            onUpdateHeroFilterStr = {
-                onFilterStr()
-            },
-            onUpdateHeroFilterAgi = {
-                onFilterAgi()
-            },
-            onUpdateHeroFilterInt = {
-                onFilterInt()
-            },
-            onRemoveAttributeFilter = {
-                removeFilterOnPrimaryAttr()
-            }
-        )
     }
-}
 
-/**
- * @param filterOnProWins: Set the HeroFilter to 'ProWins'
- * @param isEnabled: Is the ProWins filter the selected 'HeroFilter'
- * @param order: Ascending or Descending?
- * @param orderDesc: Set the order to descending.
- * @param orderAsc: Set the order to ascending.
- */
-@ExperimentalAnimationApi
-@Composable
-fun ProWinsFilterSelector(
-    filterOnProWins: () -> Unit,
-    isEnabled: Boolean,
-    order: FilterOrder? = null,
-    orderDesc: () -> Unit,
-    orderAsc: () -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
+    /**
+     * @param filterOnProWins: Set the HeroFilter to 'ProWins'
+     * @param isEnabled: Is the ProWins filter the selected 'HeroFilter'
+     * @param order: Ascending or Descending?
+     * @param orderDesc: Set the order to descending.
+     * @param orderAsc: Set the order to ascending.
+     */
+    @ExperimentalAnimationApi
+    @Composable
+    fun ProWinsFilterSelector(
+        filterOnProWins: () -> Unit,
+        isEnabled: Boolean,
+        order: FilterOrder? = null,
+        orderDesc: () -> Unit,
+        orderAsc: () -> Unit,
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .padding(bottom = 12.dp)
                 .fillMaxWidth()
-                .testTag(TAG_HERO_FILTER_PROWINS_CHECKBOX)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() }, // ✅ أفضل أداء
-                    indication = null, // disable the highlight
-                    enabled = true,
-                    onClick = {
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .fillMaxWidth()
+                    .testTag(TAG_HERO_FILTER_PROWINS_CHECKBOX)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() }, // ✅ أفضل أداء
+                        indication = null, // disable the highlight
+                        enabled = true,
+                        onClick = {
+                            filterOnProWins()
+                        },
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+
+            ) {
+                Checkbox(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .align(Alignment.CenterVertically),
+                    checked = isEnabled,
+                    onCheckedChange = {
                         filterOnProWins()
                     },
-                ),
-            verticalAlignment = Alignment.CenterVertically
-
-        ) {
-            Checkbox(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .align(Alignment.CenterVertically),
-                checked = isEnabled,
-                onCheckedChange = {
-                    filterOnProWins()
-                },
-                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
-            )
-            AppText(
-                text = HeroFilter.ProWins().uiValue,
-                style = MaterialTheme.typography.headlineMedium // Use this instead of h3
-            )
-        }
-
-        OrderSelector(
-            descString = "100% - 0%",
-            ascString = "0% - 100%",
-            isEnabled = isEnabled,
-            isDescSelected = isEnabled && order is FilterOrder.Descending,
-            isAscSelected = isEnabled && order is FilterOrder.Ascending,
-            onUpdateHeroFilterDesc = {
-                orderDesc()
-            },
-            onUpdateHeroFilterAsc = {
-                orderAsc()
-            },
-        )
-    }
-}
-
-/**
- * @param filterOnHero: Set the HeroFilter to 'Hero'
- * @param isEnabled: Is the Hero filter the selected 'HeroFilter'
- * @param order: Ascending or Descending?
- * @param orderDesc: Set the order to descending.
- * @param orderAsc: Set the order to ascending.
- */
-@ExperimentalAnimationApi
-@Composable
-fun HeroFilterSelector(
-    filterOnHero: () -> Unit,
-    isEnabled: Boolean,
-    order: FilterOrder? = null,
-    orderDesc: () -> Unit,
-    orderAsc: () -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp)
-                .testTag(TAG_HERO_FILTER_HERO_CHECKBOX)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() }, // ✅ أفضل أداء
-                    indication = null, // disable the highlight
-                    enabled = true,
-                    onClick = {
-                        filterOnHero()
-                    },
-
-                    ),
-            verticalAlignment = Alignment.CenterVertically
-
-        ) {
-            Checkbox(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .align(Alignment.CenterVertically),
-                checked = isEnabled,
-                onCheckedChange = {
-                    filterOnHero()
-                },
-                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
-            )
-            AppText(
-                text = HeroFilter.Hero().uiValue,
-                style = MaterialTheme.typography.headlineSmall // ✅ NEW (Material 3)
-            )
-        }
-
-        OrderSelector(
-            descString = "z -> a",
-            ascString = "a -> z",
-            isEnabled = isEnabled,
-            isDescSelected = isEnabled && order is FilterOrder.Descending,
-            isAscSelected = isEnabled && order is FilterOrder.Ascending,
-            onUpdateHeroFilterDesc = {
-                orderDesc()
-            },
-            onUpdateHeroFilterAsc = {
-                orderAsc()
-            },
-        )
-    }
-}
-
-/**
- * @param isStr: Is the selected attribute strength?
- * @param isAgi: Is the selected attribute Agility?
- * @param isInt: Is the selected attribute Intelligence?
- * @param onUpdateHeroFilterStr: Update the filter to Strength
- * @param onUpdateHeroFilterAgi: Update the filter to Agility
- * @param onUpdateHeroFilterInt: Update the filter to Intelligence
- */
-@SuppressLint("UnrememberedMutableInteractionSource")
-@ExperimentalAnimationApi
-@Composable
-fun PrimaryAttrSelector(
-    isStr: Boolean = false,
-    isAgi: Boolean = false,
-    isInt: Boolean = false,
-    onUpdateHeroFilterStr: () -> Unit,
-    onUpdateHeroFilterAgi: () -> Unit,
-    onUpdateHeroFilterInt: () -> Unit,
-    onRemoveAttributeFilter: () -> Unit,
-) {
-    // Strength
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, bottom = 8.dp)
-            .testTag(TAG_HERO_FILTER_STENGTH_CHECKBOX)
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null, // disable the highlight
-                onClick = {
-                    onUpdateHeroFilterStr()
-                },
-            ),
-        verticalAlignment = Alignment.CenterVertically
-
-    ) {
-        Checkbox(
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .align(Alignment.CenterVertically),
-            checked = isStr,
-            onCheckedChange = {
-                onUpdateHeroFilterStr()
-            },
-            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
-        )
-        AppText(
-            text = HeroAttribute.Strength.uiValue,
-            style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
-        )
-    }
-
-    // Agility
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, bottom = 8.dp)
-            .testTag(TAG_HERO_FILTER_AGILITY_CHECKBOX)
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null, // disable the highlight
-                onClick = {
-                    onUpdateHeroFilterAgi()
-                },
-            ),
-        verticalAlignment = Alignment.CenterVertically
-
-    ) {
-        Checkbox(
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .align(Alignment.CenterVertically),
-            checked = isAgi,
-            onCheckedChange = {
-                onUpdateHeroFilterAgi()
-            },
-            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
-        )
-        AppText(
-            text = HeroAttribute.Agility.uiValue,
-            style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
-        )
-    }
-
-    // Intelligence
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, bottom = 8.dp)
-            .testTag(TAG_HERO_FILTER_INT_CHECKBOX)
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null, // disable the highlight
-                onClick = {
-                    onUpdateHeroFilterInt()
-                },
-            ),
-        verticalAlignment = Alignment.CenterVertically
-
-    ) {
-        Checkbox(
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .align(Alignment.CenterVertically),
-            checked = isInt,
-            onCheckedChange = {
-                onUpdateHeroFilterInt()
-            },
-            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
-        )
-        AppText(
-            text = HeroAttribute.Intelligence.uiValue,
-            style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
-
-        )
-    }
-
-    // No Filter on Attribute
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, bottom = 8.dp)
-            .testTag(TAG_HERO_FILTER_UNKNOWN_CHECKBOX)
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null, // disable the highlight
-                onClick = {
-                    onRemoveAttributeFilter()
-                },
-            ),
-        verticalAlignment = Alignment.CenterVertically
-
-    ) {
-        Checkbox(
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .align(Alignment.CenterVertically),
-            checked = !isStr && !isAgi && !isInt,
-            onCheckedChange = {
-                onRemoveAttributeFilter()
-            },
-            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
-        )
-        AppText(
-            text = stringResource(R.string.none),
-            style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
-        )
-    }
-}
-
-/**
- * @param descString: String displayed in the "descending" checkbox
- * @param ascString: String displayed in the "ascending" checkbox
- * @param isEnabled: Is this HeroFilter currently the selected HeroFilter?
- * @param isDescSelected: Is the "descending" checkbox selected?
- * @param isAscSelected: Is the "ascending" checkbox selected?
- * @param onUpdateHeroFilterDesc: Set the filter to Descending.
- * @param onUpdateHeroFilterAsc: Set the filter to Ascending.
- */
-@ExperimentalAnimationApi
-@Composable
-fun OrderSelector(
-    descString: String,
-    ascString: String,
-    isEnabled: Boolean,
-    isDescSelected: Boolean,
-    isAscSelected: Boolean,
-    onUpdateHeroFilterDesc: () -> Unit,
-    onUpdateHeroFilterAsc: () -> Unit,
-) {
-    // Descending Order
-    AnimatedVisibility(visible = isEnabled) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, bottom = 8.dp)
-                .testTag(TAG_HERO_FILTER_DESC)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() }, // ✅ أفضل أداء
-                    indication = null, // disable the highlight
-                    enabled = isEnabled,
-                    onClick = {
-                        onUpdateHeroFilterDesc()
-                    },
-                ),
-            verticalAlignment = Alignment.CenterVertically
-
-        ) {
-            Checkbox(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .align(Alignment.CenterVertically),
-                enabled = isEnabled,
-                checked = isEnabled && isDescSelected,
-                onCheckedChange = {
-                    onUpdateHeroFilterDesc()
-                },
-                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
-            )
-            AppText(
-                text = descString,
-                style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
-            )
-        }
-    }
-
-    // Ascending Order
-    AnimatedVisibility(visible = isEnabled) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, bottom = 8.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() }, // ✅ أفضل أداء
-                    indication = null, // disable the highlight
-                    enabled = isEnabled,
-                    onClick = {
-                        onUpdateHeroFilterAsc()
-                    },
-                ),
-            verticalAlignment = Alignment.CenterVertically
-
-        ) {
-            Checkbox(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .testTag(TAG_HERO_FILTER_ASC)
-                    .align(Alignment.CenterVertically),
-                enabled = isEnabled,
-                checked = isEnabled && isAscSelected,
-                onCheckedChange = {
-                    onUpdateHeroFilterAsc()
-                },
-                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
-            )
-            AppText(
-                text = ascString,
-                style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
-            )
-        }
-    }
-}
-
-
-/*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DividerDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
-import com.example.hero_domain.HeroAttribute
-
-@Composable
-fun HeroListFilterDialog() {
-
-    Popup (
-        onDismissRequest = { onDismiss() }
-    ){
-
-        ElevationCard(
-            modifier = Modifier
-                .padding(10.dp),
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .padding(10.dp)
-            ) {
-
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
+                )
                 AppText(
-                    text = "Filter",
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
+                    text = HeroFilter.ProWins().uiValue,
+                    style = MaterialTheme.typography.headlineMedium // Use this instead of h3
                 )
-
-                Gap(height = 10)
-
-
-
-                MHorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    thickness = 3.dp,
-                    color = DividerDefaults.color
-                )
-
-
-                PrimaryAttributeFilter()
             }
 
+            OrderSelector(
+                descString = "100% - 0%",
+                ascString = "0% - 100%",
+                isEnabled = isEnabled,
+                isDescSelected = isEnabled && order is FilterOrder.Descending,
+                isAscSelected = isEnabled && order is FilterOrder.Ascending,
+                onUpdateHeroFilterDesc = {
+                    orderDesc()
+                },
+                onUpdateHeroFilterAsc = {
+                    orderAsc()
+                },
+            )
+        }
+    }
 
+    /**
+     * @param filterOnHero: Set the HeroFilter to 'Hero'
+     * @param isEnabled: Is the Hero filter the selected 'HeroFilter'
+     * @param order: Ascending or Descending?
+     * @param orderDesc: Set the order to descending.
+     * @param orderAsc: Set the order to ascending.
+     */
+    @ExperimentalAnimationApi
+    @Composable
+    fun HeroFilterSelector(
+        filterOnHero: () -> Unit,
+        isEnabled: Boolean,
+        order: FilterOrder? = null,
+        orderDesc: () -> Unit,
+        orderAsc: () -> Unit,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
+                    .testTag(TAG_HERO_FILTER_HERO_CHECKBOX)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() }, // ✅ أفضل أداء
+                        indication = null, // disable the highlight
+                        enabled = true,
+                        onClick = {
+                            filterOnHero()
+                        },
+
+                        ),
+                verticalAlignment = Alignment.CenterVertically
+
+            ) {
+                Checkbox(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .align(Alignment.CenterVertically),
+                    checked = isEnabled,
+                    onCheckedChange = {
+                        filterOnHero()
+                    },
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
+                )
+                AppText(
+                    text = HeroFilter.Hero().uiValue,
+                    style = MaterialTheme.typography.headlineSmall // ✅ NEW (Material 3)
+                )
+            }
+
+            OrderSelector(
+                descString = "z -> a",
+                ascString = "a -> z",
+                isEnabled = isEnabled,
+                isDescSelected = isEnabled && order is FilterOrder.Descending,
+                isAscSelected = isEnabled && order is FilterOrder.Ascending,
+                onUpdateHeroFilterDesc = {
+                    orderDesc()
+                },
+                onUpdateHeroFilterAsc = {
+                    orderAsc()
+                },
+            )
+        }
+    }
+
+    /**
+     * @param isStr: Is the selected attribute strength?
+     * @param isAgi: Is the selected attribute Agility?
+     * @param isInt: Is the selected attribute Intelligence?
+     * @param onUpdateHeroFilterStr: Update the filter to Strength
+     * @param onUpdateHeroFilterAgi: Update the filter to Agility
+     * @param onUpdateHeroFilterInt: Update the filter to Intelligence
+     */
+    @SuppressLint("UnrememberedMutableInteractionSource")
+    @ExperimentalAnimationApi
+    @Composable
+    fun PrimaryAttrSelector(
+        isStr: Boolean = false,
+        isAgi: Boolean = false,
+        isInt: Boolean = false,
+        onUpdateHeroFilterStr: () -> Unit,
+        onUpdateHeroFilterAgi: () -> Unit,
+        onUpdateHeroFilterInt: () -> Unit,
+        onRemoveAttributeFilter: () -> Unit,
+    ) {
+        // Strength
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, bottom = 8.dp)
+                .testTag(TAG_HERO_FILTER_STENGTH_CHECKBOX)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null, // disable the highlight
+                    onClick = {
+                        onUpdateHeroFilterStr()
+                    },
+                ),
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
+            Checkbox(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .align(Alignment.CenterVertically),
+                checked = isStr,
+                onCheckedChange = {
+                    onUpdateHeroFilterStr()
+                },
+                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
+            )
+            AppText(
+                text = HeroAttribute.Strength.uiValue,
+                style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
+            )
         }
 
+        // Agility
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, bottom = 8.dp)
+                .testTag(TAG_HERO_FILTER_AGILITY_CHECKBOX)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null, // disable the highlight
+                    onClick = {
+                        onUpdateHeroFilterAgi()
+                    },
+                ),
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
+            Checkbox(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .align(Alignment.CenterVertically),
+                checked = isAgi,
+                onCheckedChange = {
+                    onUpdateHeroFilterAgi()
+                },
+                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
+            )
+            AppText(
+                text = HeroAttribute.Agility.uiValue,
+                style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
+            )
+        }
+
+        // Intelligence
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, bottom = 8.dp)
+                .testTag(TAG_HERO_FILTER_INT_CHECKBOX)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null, // disable the highlight
+                    onClick = {
+                        onUpdateHeroFilterInt()
+                    },
+                ),
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
+            Checkbox(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .align(Alignment.CenterVertically),
+                checked = isInt,
+                onCheckedChange = {
+                    onUpdateHeroFilterInt()
+                },
+                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
+            )
+            AppText(
+                text = HeroAttribute.Intelligence.uiValue,
+                style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
+
+            )
+        }
+
+        // No Filter on Attribute
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, bottom = 8.dp)
+                .testTag(TAG_HERO_FILTER_UNKNOWN_CHECKBOX)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null, // disable the highlight
+                    onClick = {
+                        onRemoveAttributeFilter()
+                    },
+                ),
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
+            Checkbox(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .align(Alignment.CenterVertically),
+                checked = !isStr && !isAgi && !isInt,
+                onCheckedChange = {
+                    onRemoveAttributeFilter()
+                },
+                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
+            )
+            AppText(
+                text = stringResource(R.string.none),
+                style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
+            )
+        }
     }
-}
 
-@Composable
-fun HeroFilterDialog(label: String) {
-    DialogCheckBox(label)
-
-}
-
-@Composable
-fun PrimaryAttributeFilter() {
-    AppText(
-        text = "Primary Attribute",
-        fontSize = 20.sp
-    )
-    DialogCheckBox(HeroAttribute.Strength.uiValue)
-    DialogCheckBox(HeroAttribute.Agility.uiValue)
-    DialogCheckBox(HeroAttribute.Intelligence.uiValue)
-    DialogCheckBox(HeroAttribute.Unknown.uiValue)
-}
-
-@Composable
-fun DialogCheckBox(label: String) {
-    // Remember the state of the checkbox
-    val isChecked = remember { mutableStateOf(false) }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically, // Ensures items are vertically aligned
-        horizontalArrangement = Arrangement.Start, // Align items horizontally
-        modifier = Modifier
-            .fillMaxWidth()
+    /**
+     * @param descString: String displayed in the "descending" checkbox
+     * @param ascString: String displayed in the "ascending" checkbox
+     * @param isEnabled: Is this HeroFilter currently the selected HeroFilter?
+     * @param isDescSelected: Is the "descending" checkbox selected?
+     * @param isAscSelected: Is the "ascending" checkbox selected?
+     * @param onUpdateHeroFilterDesc: Set the filter to Descending.
+     * @param onUpdateHeroFilterAsc: Set the filter to Ascending.
+     */
+    @ExperimentalAnimationApi
+    @Composable
+    fun OrderSelector(
+        descString: String,
+        ascString: String,
+        isEnabled: Boolean,
+        isDescSelected: Boolean,
+        isAscSelected: Boolean,
+        onUpdateHeroFilterDesc: () -> Unit,
+        onUpdateHeroFilterAsc: () -> Unit,
     ) {
-        // Checkbox
-        Checkbox(
-            checked = isChecked.value,
-            onCheckedChange = { isChecked.value = it } // Update the state on toggle
-        )
+        // Descending Order
+        AnimatedVisibility(visible = isEnabled) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, bottom = 8.dp)
+                    .testTag(TAG_HERO_FILTER_DESC)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() }, // ✅ أفضل أداء
+                        indication = null, // disable the highlight
+                        enabled = isEnabled,
+                        onClick = {
+                            onUpdateHeroFilterDesc()
+                        },
+                    ),
+                verticalAlignment = Alignment.CenterVertically
 
-        Gap(width = 8)
+            ) {
+                Checkbox(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .align(Alignment.CenterVertically),
+                    enabled = isEnabled,
+                    checked = isEnabled && isDescSelected,
+                    onCheckedChange = {
+                        onUpdateHeroFilterDesc()
+                    },
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
+                )
+                AppText(
+                    text = descString,
+                    style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
+                )
+            }
+        }
 
-        // Label
-        AppText(
-            text = label,
-            fontSize = 16.sp,
-        )
+        // Ascending Order
+        AnimatedVisibility(visible = isEnabled) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, bottom = 8.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() }, // ✅ أفضل أداء
+                        indication = null, // disable the highlight
+                        enabled = isEnabled,
+                        onClick = {
+                            onUpdateHeroFilterAsc()
+                        },
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+
+            ) {
+                Checkbox(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .testTag(TAG_HERO_FILTER_ASC)
+                        .align(Alignment.CenterVertically),
+                    enabled = isEnabled,
+                    checked = isEnabled && isAscSelected,
+                    onCheckedChange = {
+                        onUpdateHeroFilterAsc()
+                    },
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // ✅ NEW (Material 3)
+                )
+                AppText(
+                    text = ascString,
+                    style = MaterialTheme.typography.bodyLarge // ✅ NEW (Material 3)
+                )
+            }
+        }
     }
 
-}
 
-@Composable
-@Preview(showSystemUi = true)
-fun HeroListFilterDialogPreview() {
-    HeroListFilterDialog()
-}*/

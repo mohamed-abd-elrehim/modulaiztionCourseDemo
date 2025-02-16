@@ -1,4 +1,4 @@
-package com.example.core
+package com.example.core.util
  class Logger(
      private val tag: String,
      private val isDebug: Boolean = true) {

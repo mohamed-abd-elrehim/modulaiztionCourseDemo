@@ -1,6 +1,6 @@
 package com.example.hero_domain
 
-import com.example.core.FilterOrder
+import com.example.core.domain.FilterOrder
 
 sealed class HeroFilter(val uiValue: String) {
 

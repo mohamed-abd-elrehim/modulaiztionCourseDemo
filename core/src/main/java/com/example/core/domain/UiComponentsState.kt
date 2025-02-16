@@ -1,4 +1,4 @@
-package com.example.core
+package com.example.core.domain
 
 sealed class UiComponentsState {
     object Show : UiComponentsState()

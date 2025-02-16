@@ -4,9 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
-import com.example.core.DataState
-import com.example.core.Logger
-import com.example.core.UIComponent
+import com.example.core.domain.DataState
+import com.example.core.domain.Queue
+import com.example.core.util.Logger
+import com.example.core.domain.UIComponent
+import com.example.core.domain.UiComponentsState
 import com.example.hero_interactors.GetHeroFromCache
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +24,7 @@ class HeroDetailsViewModel @Inject constructor(
     private val imageLoader: ImageLoader,
     private val savedStateHandle: SavedStateHandle,
     @Named("heroDetailsLogger") private val logger: Logger,
+    private val errorQueue: MutableList<UIComponent>
 ) : ViewModel()
 {
 
@@ -45,9 +48,13 @@ class HeroDetailsViewModel @Inject constructor(
             is HeroDetailsEvents.GetHeroFromCache -> {
                 getHeroFromCache(event.id)
             }
+            is HeroDetailsEvents.RemoveHeadMessageFromQueue -> {
+                removeHeadMessage()
+            }
         }
 
     }
+
 
     private fun getHeroFromCache(id : Int) {
         getHeroFromCache.execute(id).onEach { dataState ->
@@ -70,7 +77,7 @@ class HeroDetailsViewModel @Inject constructor(
     private fun handelResponse(uiComponent: UIComponent) {
         when (uiComponent) {
             is UIComponent.Dialog -> {
-                uiComponent.description?.let { logger.log(it) }
+                appendToMessageQueue(uiComponent)
 
             }
 
@@ -82,5 +89,28 @@ class HeroDetailsViewModel @Inject constructor(
         }
     }
 
+    private fun appendToMessageQueue(uiComponent: UIComponent){
+        val queue = _state.value.errorQueue
+        queue.add(uiComponent)
+        _state.value = _state.value.copy(errorQueue = queue)
+    }
+
+    private fun removeHeadMessage() {
+        try {
+            val queue = _state.value.errorQueue
+            queue.poll() // remove first item
+
+            // Create a new Queue instance to trigger recomposition
+            val newQueue = Queue(queue.items.toMutableList())
+
+            _state.value = _state.value.copy(
+                errorQueue = newQueue,  // Assign a new reference
+                alertDialogState =  _state.value.errorQueue.isNotEmpty())
+
+            logger.log("Head message removed ${_state.value.errorQueue} ${_state.value.alertDialogState}")
+        } catch (e: Exception) {
+            logger.log("Nothing to remove from DialogQueue")
+        }
+    }
 
 }

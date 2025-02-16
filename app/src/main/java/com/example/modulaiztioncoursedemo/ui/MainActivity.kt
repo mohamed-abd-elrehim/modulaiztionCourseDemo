@@ -1,6 +1,5 @@
 package com.example.modulaiztioncoursedemo.ui
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,29 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import coil.ImageLoader
-import com.example.core.DataState
-import com.example.core.Logger
-import com.example.core.ProgressBarState
-import com.example.core.UIComponent
-import com.example.hero_interactors.GetHeroes
-import com.example.hero_interactors.HeroInteractors
 import com.example.modulaiztioncoursedemo.ui.theme.ModulaiztionCourseDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -124,9 +108,11 @@ fun NavGraphBuilder.addHeroDetail() {
             ) + fadeOut(animationSpec = tween(300))
         }
         ){
-        val viewModel: HeroDetailsViewModel = hiltViewModel()
-        val state = viewModel.state.collectAsState()
-        HeroDetails(state.value)
+        val heroDetailsViewModel: HeroDetailsViewModel = hiltViewModel()
+        val state = heroDetailsViewModel.state.collectAsState()
+        HeroDetails(state.value,
+                events = heroDetailsViewModel::onTriggerEvent
+        )
     }
 }
 

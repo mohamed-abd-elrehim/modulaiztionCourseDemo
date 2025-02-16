@@ -1,8 +1,8 @@
 package com.example.hero_interactors
 
-import com.example.core.DataState
-import com.example.core.ProgressBarState
-import com.example.core.UIComponent
+import com.example.core.domain.DataState
+import com.example.core.domain.ProgressBarState
+import com.example.core.domain.UIComponent
 import com.example.hero_datasource.cache.cache_service.IHeroCacheService
 import com.example.hero_datasource.network.service.IHeroService
 import com.example.hero_domain.Hero
@@ -24,6 +24,8 @@ class GetHeroes(
             //emit data from cache
             val heroesFromCache = cache.selectAll()
            emit(DataState.Data(heroesFromCache))
+
+            throw Exception("some error")
 
         } catch (e: Exception) {
 

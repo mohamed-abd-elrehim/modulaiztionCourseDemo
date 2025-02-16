@@ -4,10 +4,11 @@ package com.example.modulaiztioncoursedemo.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
-import com.example.core.DataState
-import com.example.core.Logger
-import com.example.core.UIComponent
-import com.example.core.UiComponentsState
+import com.example.core.domain.DataState
+import com.example.core.domain.Queue
+import com.example.core.util.Logger
+import com.example.core.domain.UIComponent
+import com.example.core.domain.UiComponentsState
 import com.example.hero_domain.HeroAttribute
 import com.example.hero_domain.HeroFilter
 import com.example.hero_interactors.FilterHeros
@@ -26,6 +27,9 @@ class HeroListViewModel @Inject constructor(
     @Named("heroListLogger")  private val logger: Logger,
     private val filterHeros: FilterHeros,
     private val imageLoader: ImageLoader,
+    private val errorQueue: MutableList<UIComponent>
+
+
 ): ViewModel() {
 
     //val state =  mutableStateOf<HeroListState>(HeroListState(imageLoader = imageLoader))
@@ -35,6 +39,15 @@ class HeroListViewModel @Inject constructor(
 
     init {
        onTriggerEvent(HeroListEvents.GetHeroes)
+        appendToMessageQueue(UIComponent.Dialog(
+            title = "Error",
+            description = "Error"
+        ))
+
+        appendToMessageQueue(UIComponent.Dialog(
+            title = "Error2",
+            description = "Error2"
+        ))
 
     }
 
@@ -58,11 +71,17 @@ class HeroListViewModel @Inject constructor(
             is HeroListEvents.UpdateHeroPrimaryAttr -> {
                 updateHeroPrimaryAttr(event.heroAttribute)
             }
+            is HeroListEvents.RemoveHeadMessageFromQueue -> {
+                removeHeadMessage()
+            }
+
 
 
 
         }
     }
+
+
     private fun updateHeroPrimaryAttr(heroAttribute: HeroAttribute){
         _state.value = _state.value.copy(primaryAttribute = heroAttribute)
         filterHeroes()
@@ -117,7 +136,7 @@ class HeroListViewModel @Inject constructor(
     private fun handelResponse(uiComponent: UIComponent) {
         when (uiComponent) {
             is UIComponent.Dialog -> {
-                uiComponent.description?.let { logger.log(it) }
+                uiComponent.description?.let { appendToMessageQueue (uiComponent) }
 
             }
 
@@ -128,8 +147,30 @@ class HeroListViewModel @Inject constructor(
 
         }
     }
+    private fun appendToMessageQueue(uiComponent: UIComponent){
+        val queue = _state.value.errorQueue
+        queue.add(uiComponent)
+        _state.value = _state.value.copy(errorQueue = queue)
+    }
 
+    private fun removeHeadMessage() {
+        try {
+            val queue = _state.value.errorQueue
+            queue.poll() // remove first item
 
+            // Create a new Queue instance to trigger recomposition
+            val newQueue = Queue(queue.items.toMutableList())
 
+            _state.value = _state.value.copy(
+                errorQueue = newQueue,  // Assign a new reference
+                alertDialogState =  _state.value.errorQueue.isNotEmpty())
+
+            logger.log("Head message removed ${_state.value.errorQueue} ${_state.value.alertDialogState}")
+        } catch (e: Exception) {
+            logger.log("Nothing to remove from DialogQueue")
+        }
+    }
 
 }
+
+

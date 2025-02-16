@@ -1,6 +1,8 @@
 package com.example.modulaiztioncoursedemo.di
 
-import com.example.core.Logger
+import com.example.core.domain.Queue
+import com.example.core.domain.UIComponent
+import com.example.core.util.Logger
 import com.example.hero_interactors.FilterHeros
 import com.example.hero_interactors.GetHeroes
 import com.example.hero_interactors.HeroInteractors
@@ -19,7 +21,7 @@ object HeroListModule {
     @Singleton
     fun provideGetHeroes(
         interactors: HeroInteractors,
-    ): GetHeroes{
+    ): GetHeroes {
         return interactors.getHeroes
 
     }
@@ -35,6 +37,7 @@ object HeroListModule {
         )
 
     }
+
     @Provides
     @Singleton
     fun provideFilterHeros(
@@ -42,4 +45,5 @@ object HeroListModule {
     ): FilterHeros {
         return interactors.filterHeros
     }
+
 }

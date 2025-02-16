@@ -1,8 +1,7 @@
 package com.example.modulaiztioncoursedemo.di
 
-import com.example.core.Logger
+import com.example.core.util.Logger
 import com.example.hero_interactors.GetHeroFromCache
-import com.example.hero_interactors.GetHeroes
 import com.example.hero_interactors.HeroInteractors
 import dagger.Module
 import dagger.Provides
