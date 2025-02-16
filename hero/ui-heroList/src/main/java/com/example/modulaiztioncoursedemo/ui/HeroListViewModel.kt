@@ -27,7 +27,7 @@ class HeroListViewModel @Inject constructor(
     @Named("heroListLogger")  private val logger: Logger,
     private val filterHeros: FilterHeros,
     private val imageLoader: ImageLoader,
-    private val errorQueue: MutableList<UIComponent>
+    //private val errorQueue: MutableList<UIComponent>
 
 
 ): ViewModel() {
@@ -39,6 +39,7 @@ class HeroListViewModel @Inject constructor(
 
     init {
        onTriggerEvent(HeroListEvents.GetHeroes)
+
 
 
     }

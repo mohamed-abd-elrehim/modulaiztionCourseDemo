@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -44,18 +45,19 @@ fun HeroDetails(
     val context = LocalContext.current
     val imageLoader = state.imageLoader
     state.heroState?.let { hero ->
+
         Box(
             modifier = Modifier
-                .background(Color.Cyan)
                 .fillMaxSize()
+                .background(Color.Cyan)
         ) {
 
 
-            Column {
-                HeroImage(hero.img,hero.localizedName, imageLoader, context)
-                HeroBasicDetails(hero,imageLoader, context)
-                HeroStatsSection(hero)
-                HeroWinStats(hero)
+            LazyColumn {
+                item { HeroImage(hero.img, hero.localizedName, imageLoader, context) }
+                item { HeroBasicDetails(hero, imageLoader, context) }
+                item { HeroStatsSection(hero) }
+                item { HeroWinStats(hero) }
 
 
             }

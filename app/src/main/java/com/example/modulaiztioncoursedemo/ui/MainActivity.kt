@@ -2,6 +2,7 @@ package com.example.modulaiztioncoursedemo.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.core.tween
@@ -9,12 +10,20 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -24,33 +33,50 @@ import androidx.navigation.compose.rememberNavController
 import com.example.modulaiztioncoursedemo.ui.theme.ModulaiztionCourseDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    //@Inject lateinit var imageLoader:ImageLoader
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(
+                Color.Gray.toArgb(),
+                Color.Gray.toArgb() // Light scrim for contrast
+            )
+        )
+
+
+
+
         setContent {
             ModulaiztionCourseDemoTheme(
+
             ) {
+
                 val navController = rememberNavController()
-                NavHost(
-                    navController = navController,
-                    startDestination =Screen.HeroListScreen.route,
-                    modifier = Modifier.padding(WindowInsets.statusBars.asPaddingValues()),
-                            builder = {
-                        addHeroList(navController)
-                        addHeroDetail()
-                    }
-                )
+                Box(
+                  ) {
+                    NavHost(
+                        navController = navController,
+                        startDestination =Screen.HeroListScreen.route,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .safeDrawingPadding(),
+                        builder = {
+                            addHeroList(navController)
+                            addHeroDetail()
+                        }
+                    )
+                }
+
 
 
             }
         }
     }
 }
-
 
 
 fun NavGraphBuilder.addHeroList(

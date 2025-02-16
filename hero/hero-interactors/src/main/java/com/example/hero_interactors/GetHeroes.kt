@@ -24,8 +24,6 @@ class GetHeroes(
             //emit data from cache
             val heroesFromCache = cache.selectAll()
            emit(DataState.Data(heroesFromCache))
-
-
         } catch (e: Exception) {
 
             emit(

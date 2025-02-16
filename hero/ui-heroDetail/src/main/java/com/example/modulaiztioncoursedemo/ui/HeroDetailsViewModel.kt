@@ -24,7 +24,6 @@ class HeroDetailsViewModel @Inject constructor(
     private val imageLoader: ImageLoader,
     private val savedStateHandle: SavedStateHandle,
     @Named("heroDetailsLogger") private val logger: Logger,
-    private val errorQueue: MutableList<UIComponent>
 ) : ViewModel()
 {
 
