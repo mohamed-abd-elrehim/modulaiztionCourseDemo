@@ -50,7 +50,6 @@ fun HeroListCard(
                         imageUrl = hero.img,
                         imageTitle = hero.localizedName,
                         modifier = Modifier
-                            .background(Color.LightGray)
                             .width(150.dp),
                         imageLoader = imageLoader,
                         context = context
